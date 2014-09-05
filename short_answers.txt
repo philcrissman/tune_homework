@@ -1,0 +1,58 @@
+# Short Answers
+
+1. What does O(n) mean? O(n^2)?
+
+Big-O notation is a common way of indicating the upper bound of the growth of a function, either in space (memory) or runtime (when the function will finish). 
+
+A common example of O(n) might be searching an unsorted array for the maximum value it holds; we need to check every value at least once, so an array of _n_ elements will require _n_ comparisons. We'll also need to assign the "current" max that we've found as we go through the array,  so that would be _at most_ n assignment operations (if the array were somehow already sorted, we'd need to do an assignment to our "max" variable for each n). If we view both comparison and assignment as equivalent operations, the runtime will require at most 2n operations. Big-O traditionally discards constants, since for very large _n_, the value of _n_ becomes more significant than the constant. So the runtime of finding the maximum element in an array would be O(n). (The space requirement would be O(1), as we are only storing 1 element, whatever the "current" max we've found so far, at any point).
+
+TL;DR: O(n) indicates that the runtime, or space requirements, of a given function has an upper bound based on the value of _n_; in other words, the runtime or space required will grow linearly, not (say, exponentially).
+
+O(n^2) then indicates that the upper bound of a function is up to n^2. Some simpler sorting algorithms (e.g. bubble sort) have this runtime; since bubble sort (in the worst case) might have to compare and/or swap every single element in an array with every other element, n * n operations, it would be O(n^2).
+
+
+2. Describe the quicksort algorithm.
+
+Quicksort (assuming an array for this description):
+1. selects an element to use as a 'pivot'.[*]
+2. move elements _less than_ the pivot to the beginning of the array; move elements _greater than_ the pivot to the end of the array: the pivot becomes the index between these two portions.
+3. Repeat steps 1&2 for each portion (less-than-pivot and greater-than-pivot).
+4. Your array is now sorted.
+
+[*] It turns out the way the pivot is chosen can affect the runtime significantly; if the array is already sorted and the _last_ element is selected, the runtime becomes O(n^2). There are several ways to choose the pivot; a simple way is selecting the median index. This is still performant on arrays that are already sorted.
+
+Because this subdivides recursively, it effectively divides the array up into a binary tree of sub arrays; in the best case (if the pivot were magically the median value _every time_ and the array was divided exactly in half repeatedly), this binary tree is a "perfect" tree; it's height is log n (a property of binary trees in general).
+
+Since the height is log n, but each element contains all n elements of the array, at each level of the tree the algorithm needs to do at most n comparisons and/or assigments. So the (best case) runtime is n elements times the height log n, or O(n log n). 
+
+(In the worst case, say, _every time_ you choose the pivot, every element is _less than_ the pivot; instead of a nicely balanced binary tree of height log n, you could have a tall skinny tree of height n. In this case the runtime becomes n * n, or O(n^2).
+
+
+3. In C, what is a pointer?
+A pointer is a variable whose content "points" to another value using it's memory address. The _value_ of the pointer variable is a memory address. 
+
+```
+int foo = 42; // an int of 42
+int *ptr = &foo; // a pointer to foo's memory address; *ptr's 'value' is probably something like 0xDECAFBAD.
+
+// to actually get/use the value of what ptr points to, we need to dereference it with *:
+printf("ptr points to %d", *ptr);
+```
+
+This can be very performant, as it can be much faster (and save space) to pass around or copy a memory address than an entire huge string or array.
+
+
+4. What is the difference between Stack and Heap memory?
+
+The _stack_ is memory set aside for use in executing a given thread. It's fixed in size and is accessed as a last-in-first-out structure (like... a stack). A recursive call which nests very deeply could exhaust the depth of the stack, hence the _stack overflow_ errors than can occur as a result.
+
+The _heap_ is memory set aside for dynamic allocation, and is shared among threads (causing the necessity to lock data so that two threads can't change it at the same time). While the stack size is fixed, the heap can grow, more memory being requested from the Operating system.
+
+In languages where memory must be managed explicitly (C/C++), dynamically assigned memory exists until the programmer deallocates it. In more modern languages with garbage collection, the garbage collector will periodically deallocate memory which is no longer referenced.
+
+
+5. What is the purpose of a garbage collector?
+
+Oops, just referred to this: since memory which is allocated to the heap will continue to exist even if it's no longer referenced by the program, this can cause memory leaks in languages where memory must be explicitly managed: in other words, memory is allocated, then no longer referenced, but never released, which can eventually cause an application or OS to run out of available memory completely.
+
+Garbage collectors, in languages like Java, Ruby, and many modern languages, periodically clean up memory which is no longer referenced in order to (hopefully) avoid memory leaks.
