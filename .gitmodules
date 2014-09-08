@@ -1,0 +1,3 @@
+[submodule "sudoku_philc"]
+	path = sudoku_philc
+	url = git@github.com:philcrissman/sudoku_philc.git
