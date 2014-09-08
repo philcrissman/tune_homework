@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'sudoku_philc'
+
+csv = STDIN.read
+grid = SudokuPhilc::Grid.new(csv)
+grid.solve
+puts grid.to_csv
